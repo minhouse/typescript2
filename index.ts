@@ -1,35 +1,53 @@
 class ObjectWrapper {
-  private _obj;
+  private _obj: { [key: string]: unknown };
 
   /***
    * 引数のオブジェクトのコピーを this._objに設定
    */
-  constructor(_obj: Object) {}
+  // キーは文字列、値は不特定の型
+  // コピーにより外部オブジェクトの変更から隔離、アクセスのみ加
+  constructor(_obj: { [key: string]: unknown }) {
+    this._obj = { ..._obj };
+  }
 
   /**
    * this._objのコピーを返却
    * @return Object
    */
-  get obj() {}
+  get obj() {
+    return { ...this._obj };
+  }
 
   /**
    * this._obj[key] に valを設定。keyがthis._objに存在しない場合、falseを返却
    * @param key オブジェクトのキー
    * @param val オブジェクトの値
    */
-  set(key, val): boolean {}
+  set(key: string, val: unknown): boolean {
+    if (this._obj.hasOwnProperty(key)) {
+      this._obj[key] = val;
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   /**
    * 指定したキーの値のコピーを返却
    * 指定のキーが存在しない場合 undefinedを返却
    * @param key オブジェクトのキー
    */
-  get(key) {}
+  get(key: string) {
+    // ?:は条件式のTrue/Falseの評価をする
+    return this._obj.hasOwnProperty(key) ? this._obj[key] : undefined;
+  }
 
   /**
    * 指定した値を持つkeyの配列を返却。該当のものがなければ空の配列を返却。
    */
-  findKeys(val: unknown) {}
+  findKeys(val: unknown) {
+    return Object.keys(this._obj).filter((key) => this._obj[key] == val);
+  }
 }
 
 /**
